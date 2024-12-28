@@ -52,9 +52,12 @@ const SignInPage = () => {
           <CardHeader>
             <CardTitle>Sign In</CardTitle>
             <CardDescription>
-              <Link className="auth-link" to="/auth/sign-up">
-                Don't have an account? Sign Up
-              </Link>
+              <Button variant="link">
+                <Link to="/auth/sign-up">
+                  Don't have an account? Sign Up
+                </Link>
+              </Button>
+
             </CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit}>
