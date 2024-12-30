@@ -1,3 +1,4 @@
+import React from "react";
 import { useSession } from "../context/SessionContext";
 import { Navbar } from "@/components/navbar"
 import { LogSession } from "@/components/log-session"

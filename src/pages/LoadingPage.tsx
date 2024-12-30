@@ -1,8 +1,10 @@
+import React from "react";
+
 const LoadingPage = () => {
     return (
       <main>
-        <section className="main-container">
-          <h1 className="header-text">Loading...</h1>
+        <section className="flex align-center justify-center">
+          <div className="header-text">Loading...</div>
         </section>
       </main>
     );

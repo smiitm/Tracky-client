@@ -1,15 +1,16 @@
+import React from "react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { format, isAfter, isBefore } from "date-fns";
+import { useSession } from "../context/SessionContext";
 
 export function LogSession() {
-  // State to store date, start time, end time, and duration
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [startTime, setStartTime] = useState<number | null>(null); // Minutes since midnight
   const [endTime, setEndTime] = useState<number | null>(null); // Minutes since midnight
@@ -18,7 +19,6 @@ export function LogSession() {
   const [endTimeInput, setEndTimeInput] = useState<string>(""); // Raw input for end time
   const [error, setError] = useState<string | null>(null); // Validation errors
 
-  // Utility: Convert HH:MM to minutes since midnight
   const timeToMinutes = (time: string): number | null => {
     const match = time.match(/^(\d{2}):(\d{2})$/); // Validate HH:MM format
     if (!match) return null;
@@ -27,7 +27,6 @@ export function LogSession() {
     return hours * 60 + minutes;
   };
 
-  // Utility: Validate the selected date
   const isDateValid = (date: Date): boolean => {
     const today = new Date();
     const oneWeekAgo = new Date();
@@ -35,7 +34,6 @@ export function LogSession() {
     return !isAfter(date, today) && !isBefore(date, oneWeekAgo);
   };
 
-  // Handle duration and validations whenever inputs change
   useEffect(() => {
     if (startTime !== null && endTime !== null) {
       const minutes = endTime - startTime;
@@ -50,7 +48,6 @@ export function LogSession() {
     }
   }, [startTime, endTime]);
 
-  // Handle input validation for start and end times
   const handleStartTimeChange = (value: string) => {
     setStartTimeInput(value);
     const minutes = timeToMinutes(value);
@@ -63,7 +60,6 @@ export function LogSession() {
     setEndTime(minutes);
   };
 
-  // Handle date selection and validation
   const handleDateChange = (date: Date | undefined) => {
     if (!date || !isDateValid(date)) {
       setSelectedDate(null);
@@ -74,8 +70,86 @@ export function LogSession() {
     }
   };
 
+  const { session } = useSession();
+
+  // Handle form submission
+  const handleSubmit = async () => {
+
+    if (!session || !session.user) {
+      console.error("User is not authenticated.");
+      setError("User is not authenticated. Please log in.");
+      return;
+    }
+
+    const userId = session.user.id;
+
+    // Ensure all fields are valid before proceeding
+    if (!userId || !startTime || !endTime || !selectedDate) {
+      console.error("Missing required fields.");
+      setError("All fields must be filled out correctly.");
+      return;
+    }
+    console.log({ selectedDate, startTime, endTime, error });
+    const sessionData = {
+      userId: userId,
+      routineId: 1, // Replace with dynamic value later
+      startTime: startTime,
+      endTime: endTime,
+      duration: (endTime! - startTime!),
+      sessionDate: selectedDate,
+    };
+
+    try {
+      console.log("Submitting session data:", sessionData); // Log data before the request
+      const response = await fetch("http://localhost:5000/api/sessions/log", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(sessionData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log("Session logged successfully:", result);
+        setError(null); // Clear any previous errors
+      } else {
+        console.error("Failed to log session:", result.error);
+        setError(result.error || "Failed to log session.");
+      }
+    } catch (error) {
+      console.error("Error logging session:", error);
+      setError("An error occurred while logging the session.");
+    }
+  };
+
+  // const testData = {
+  //   userId: "userId",
+  //   routineId: 1,
+  //   startTime: 69,
+  //   endTime: 669,
+  //   duration: (600),
+  //   sessionDate: "2024-12-26",
+  // };
+  // const testSubmit = async () => {
+  //   console.log("Submitting session data:", testData); // Log data before the request
+  //   const response = await fetch("http://localhost:5000/api/sessions/log", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(testData),
+  //   });
+  //   const result = await response.json();
+  //   if (response.ok) {
+  //     console.log("Session logged successfully:", result);
+  //   }
+  // }
   return (
+    <>
     <Card>
+    {/* <Button onClick={testSubmit}>test</Button> */}
       <form>
         <CardHeader>
           <CardTitle>Log Session</CardTitle>
@@ -106,7 +180,7 @@ export function LogSession() {
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button variant="outline" className="w-full">
-                      {selectedDate ? format(selectedDate, "dd-MM-yyyy") : "Pick a date"}
+                      {selectedDate ? format(selectedDate, "yyyy-MM-dd") : "Pick a date"}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent>
@@ -164,15 +238,20 @@ export function LogSession() {
             {error && <CardDescription>{error}</CardDescription>}
             {duration && <CardDescription>{duration}</CardDescription>}
           </div>
+          
           <Button
-            disabled={
-              !selectedDate || startTime === null || endTime === null || error !== null
-            }
+            // disabled={
+            //   !selectedDate || startTime === null || endTime === null || error !== null
+            // }
+            type="button"
+            onClick={handleSubmit}
           >
             Submit
           </Button>
+          {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
         </CardFooter>
       </form>
     </Card>
+    </>
   );
 }
