@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import {
     NavigationMenu,
@@ -11,7 +10,7 @@ import {
     // NavigationMenuViewport,
 } from "@/components/ui/navigation-menu"
 import { Button } from "@/components/ui/button"
-import { ModeToggle } from "@/components/mode-toggle"
+import { ModeToggle } from "@/components/modeToggle"
 import supabase from "../supabase";
 import { useSession } from "../context/SessionContext";
 

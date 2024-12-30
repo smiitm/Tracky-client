@@ -1,7 +1,7 @@
-import React from "react";
 import { useSession } from "../context/SessionContext";
 import { Navbar } from "@/components/navbar"
-import { LogSession } from "@/components/log-session"
+import { LogSession } from "@/components/logSession"
+import { NewRoutine } from "@/components/newRoutine"
 
 const Dashboard = () => {
   const { session } = useSession();
@@ -17,7 +17,7 @@ const Dashboard = () => {
           <LogSession />
         </div>
       </main>
-      
+      <NewRoutine />
       <footer className="text-center py-2">
         <h1>This is a Protected Page</h1>
         <p>User : {session?.user.email || "None"}</p>

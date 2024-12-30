@@ -1,4 +1,3 @@
-import React from "react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { format, isAfter, isBefore } from "date-fns";
 import { useSession } from "../context/SessionContext";
+import { toast } from "sonner"
 
 export function LogSession() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
@@ -112,9 +112,11 @@ export function LogSession() {
       const result = await response.json();
 
       if (response.ok) {
+        toast.success("Session logged successfully")
         console.log("Session logged successfully:", result);
         setError(null); // Clear any previous errors
       } else {
+        toast.error("Failed to log session:", result.error)
         console.error("Failed to log session:", result.error);
         setError(result.error || "Failed to log session.");
       }
@@ -240,15 +242,14 @@ export function LogSession() {
           </div>
           
           <Button
-            // disabled={
-            //   !selectedDate || startTime === null || endTime === null || error !== null
-            // }
+            disabled={
+              !selectedDate || startTime === null || endTime === null || error !== null
+            }
             type="button"
             onClick={handleSubmit}
           >
             Submit
           </Button>
-          {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
         </CardFooter>
       </form>
     </Card>
