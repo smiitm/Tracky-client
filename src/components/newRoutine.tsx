@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSession } from "../context/SessionContext";
-
+import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -68,7 +68,7 @@ export function NewRoutine() {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="outline">+ New</Button>
+                <Button variant="ghost"><Plus/>New routine</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>

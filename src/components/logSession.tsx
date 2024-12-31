@@ -5,10 +5,10 @@ import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { format, isAfter, isBefore } from "date-fns";
 import { useSession } from "../context/SessionContext";
 import { toast } from "sonner"
+import { NewRoutine } from "@/components/newRoutine"
 
 export function LogSession() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
@@ -126,59 +126,33 @@ export function LogSession() {
     }
   };
 
-  // const testData = {
-  //   userId: "userId",
-  //   routineId: 1,
-  //   startTime: 69,
-  //   endTime: 669,
-  //   duration: (600),
-  //   sessionDate: "2024-12-26",
-  // };
-  // const testSubmit = async () => {
-  //   console.log("Submitting session data:", testData); // Log data before the request
-  //   const response = await fetch("http://localhost:5000/api/sessions/log", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(testData),
-  //   });
-  //   const result = await response.json();
-  //   if (response.ok) {
-  //     console.log("Session logged successfully:", result);
-  //   }
-  // }
   return (
     <>
-    <Card>
-    {/* <Button onClick={testSubmit}>test</Button> */}
-      <form>
-        <CardHeader>
-          <CardTitle>Log Session</CardTitle>
-          <CardDescription>Log a new session for a routine.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className=" w-full items-center gap-4 space-y-4">
-            <div className="flex space-x-4">
+      <div className="w-full mx-8">
+        <h2 className="text-lg font-medium">Log a new session for a routine.</h2>
+        <form>
+          <div className="grid grid-cols-2 pt-4 space-x-4">
+            <div className="grid grid-cols-2 space-x-4">
               {/* Routine Picker */}
-              <div className="flex flex-col space-y-1.5 w-1/2">
-                <Label htmlFor="framework">Routine</Label>
+              {/* This needs to be a seprate comp */}
+              <div className="flex flex-col space-y-1.5">
+                <Label className="text-muted-foreground px-1">Routine</Label>
                 <Select>
-                  <SelectTrigger id="framework">
+                  <SelectTrigger id="routine">
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
                   <SelectContent position="popper">
-                    <SelectItem value="next">Next.js</SelectItem>
                     <SelectItem value="sveltekit">SvelteKit</SelectItem>
                     <SelectItem value="astro">Astro</SelectItem>
                     <SelectItem value="nuxt">Nuxt.js</SelectItem>
+                    <SelectItem value="new"><NewRoutine/></SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               {/* Date Picker */}
-              <div className="w-1/2">
-                <label className="block text-sm font-medium">Select Date</label>
+              <div className="">
+                <Label className="block text-sm font-medium text-muted-foreground px-1">Select Date</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button variant="outline" className="w-full">
@@ -203,9 +177,9 @@ export function LogSession() {
             </div>
 
             {/* Time Picker */}
-            <div className="flex space-x-4">
+            <div className="grid grid-cols-2 space-x-4">
               <div>
-                <label className="block text-sm font-medium">Start Time</label>
+                <Label className="block text-sm font-medium text-muted-foreground px-1">Start Time</Label>
                 <Input
                   type="text"
                   placeholder="HH:MM"
@@ -219,7 +193,7 @@ export function LogSession() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium">End Time</label>
+                <Label className="block text-sm font-medium text-muted-foreground px-1">End Time</Label>
                 <Input
                   type="text"
                   placeholder="HH:MM"
@@ -233,26 +207,27 @@ export function LogSession() {
               </div>
             </div>
           </div>
-        </CardContent>
-        <CardFooter className="flex justify-between space-x-8">
-          <div>
-            <CardDescription>Session duration:</CardDescription>
-            {error && <CardDescription>{error}</CardDescription>}
-            {duration && <CardDescription>{duration}</CardDescription>}
+
+
+          <div className="flex justify-between space-x-8 pt-4">
+            <div className="text-muted-foreground text-sm">
+              <p >Session duration:</p>
+              {error && <p>{error}</p>}
+              {duration && <p>{duration}</p>}
+            </div>
+
+            <Button
+              disabled={
+                !selectedDate || startTime === null || endTime === null || error !== null
+              }
+              type="button"
+              onClick={handleSubmit}
+            >
+              Submit
+            </Button>
           </div>
-          
-          <Button
-            disabled={
-              !selectedDate || startTime === null || endTime === null || error !== null
-            }
-            type="button"
-            onClick={handleSubmit}
-          >
-            Submit
-          </Button>
-        </CardFooter>
-      </form>
-    </Card>
+        </form>
+      </div>
     </>
   );
 }

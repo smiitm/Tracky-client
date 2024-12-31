@@ -45,7 +45,7 @@ const SignInPage = () => {
     setStatus("");
   };
   return (
-    <>
+    <div>
       <Navbar />
 
       <main >
@@ -53,12 +53,9 @@ const SignInPage = () => {
           <CardHeader>
             <CardTitle>Sign In</CardTitle>
             <CardDescription>
-              <Button variant="link">
                 <Link to="/auth/sign-up">
                   Don't have an account? Sign Up
                 </Link>
-              </Button>
-
             </CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit}>
@@ -85,7 +82,7 @@ const SignInPage = () => {
           </form>
         </Card>
       </main>
-    </>
+    </div>
   );
 };
 

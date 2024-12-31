@@ -1,12 +1,10 @@
 import { Link } from "react-router-dom";
-import { Navbar } from "@/components/navbar"
 import { Button } from "@/components/ui/button"
 
 const HomePage = () => {
   return (
-    <>
-      <Navbar />
-      <main>
+    <main className="w-full">
+      <div>
 
         <div className='text-5xl text-center p-8'>
           Tracky client it is!
@@ -18,8 +16,8 @@ const HomePage = () => {
           </Button>
         </div>
 
-      </main>
-    </>
+      </div>
+    </main>
   );
 };
 

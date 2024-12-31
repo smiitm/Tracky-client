@@ -45,7 +45,7 @@ const SignUpPage = () => {
   };
 
   return (
-    <>
+    <div>
       <Navbar />
 
       <main >
@@ -53,11 +53,9 @@ const SignUpPage = () => {
           <CardHeader>
             <CardTitle>Sign Up</CardTitle>
             <CardDescription>
-              <Button variant="link">
                 <Link  to="/auth/sign-in">
                   Already have an account? Sign In
                 </Link>
-              </Button>
             </CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit}>
@@ -84,7 +82,7 @@ const SignUpPage = () => {
           </form>
         </Card>
       </main>
-    </>
+    </div>
   );
 };
 
